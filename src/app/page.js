@@ -39,7 +39,7 @@ export default function Home() {
     setError("");
 
     // The API endpoint for your FastAPI server
-    const apiUrl = "http://localhost:8000/analyze-article";
+    const apiUrl = "https://research-analyst.onrender.com/analyze-article";
 
     try {
       const response = await fetch(apiUrl, {
