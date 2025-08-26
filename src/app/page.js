@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import ReactMarkdown from "react-markdown"; // Import the markdown renderer
+import ReactMarkdown from "react-markdown";
 
 // --- NEW: A dedicated component for rendering styled results ---
 const ResultDisplay = ({ resultText }) => {
-  // Split the result into sections for each article
-  const articleSections = resultText.split(/\*\*Article \d+:\*\*/).filter(Boolean);
+  // --- FIX: Ensure resultText is a string before splitting ---
+  const safeText = typeof resultText === 'string' ? resultText : '';
+  const articleSections = safeText.split(/\*\*Article \d+:\*\*/).filter(Boolean);
 
   const colors = {
     mutation: "text-green-400",
@@ -15,8 +16,11 @@ const ResultDisplay = ({ resultText }) => {
   };
 
   const renderField = (line) => {
-    const parts = line.split(":");
-    if (parts.length < 2) return <p>{line}</p>;
+    // --- FIX: Ensure line is a string before splitting ---
+    const safeLine = Array.isArray(line) ? line.join('') : (typeof line === 'string' ? line : '');
+    const parts = safeLine.split(":");
+    
+    if (parts.length < 2) return <p>{safeLine}</p>;
 
     const key = parts[0].toLowerCase();
     const value = parts.slice(1).join(":");
@@ -57,7 +61,7 @@ const ResultDisplay = ({ resultText }) => {
   );
 };
 
-// --- Main Home Component ---
+// --- Main Home Component (Unchanged) ---
 export default function Home() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState("");
@@ -91,7 +95,6 @@ export default function Home() {
     }
   };
   
-  // A simple loading spinner component
   const LoadingSpinner = () => (
     <svg
       className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
